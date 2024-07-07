@@ -53,7 +53,7 @@ export const useTaskStore = defineStore("task", () => {
   const deleteSchedule = async (schedule: Schedule): Promise<undefined> => {
     await $fetch("/api/task", {
       method: "delete",
-      body: { sid: schedule.id!, type: "schedule" },
+      body: { id: schedule.id!, type: "schedule" },
     });
 
     tasks.value.forEach(task => {
