@@ -13,7 +13,7 @@ const config = {
   bracketSameLine: false,
   bracketSpacing: true,
   endOfLine: "auto",
-  arrowParens: "avoid",
+  arrowParens: "always",
   vueIndentScriptAndStyle: false,
   proseWrap: "never",
   plugins: ["prettier-plugin-jsdoc", "prettier-plugin-tailwindcss"],

@@ -1,6 +1,5 @@
 // @ts-check
 import antfu from "@antfu/eslint-config";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
 import withNuxt from "./.nuxt/eslint.config.mjs";
 
@@ -20,6 +19,7 @@ export default withNuxt(
       "vue/comma-dangle": ["error", "only-multiline"],
       "style/comma-dangle": ["error", "only-multiline"],
       "style/brace-style": ["error", "1tbs", { allowSingleLine: false }],
+      "style/arrow-parens": ["error", "always"],
       "vue/html-self-closing": [
         "error",
         {
@@ -43,6 +43,5 @@ export default withNuxt(
         },
       ],
     },
-  },
-  eslintPluginPrettierRecommended
+  }
 );
