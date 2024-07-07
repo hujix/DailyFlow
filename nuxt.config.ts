@@ -6,9 +6,6 @@ import Aura from "@primevue/themes/aura";
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
-  hub: {
-    database: true,
-  },
   modules: [
     "@pinia/nuxt",
     "@nuxt/eslint",
