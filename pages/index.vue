@@ -28,11 +28,11 @@ if (data.value?.status === 200) {
       <ToDo class="mt-8 h-96 w-72 flex-none" />
     </div>
     <div v-else class="flex flex-col items-center gap-2">
-      <Skeleton class="mb-2"></Skeleton>
-      <Skeleton width="10rem" class="mb-2"></Skeleton>
-      <Skeleton width="5rem" class="mb-2"></Skeleton>
-      <Skeleton height="2rem" class="mb-2"></Skeleton>
-      <Skeleton width="10rem" height="4rem"></Skeleton>
+      <Skeleton class="mb-2" />
+      <Skeleton width="10rem" class="mb-2" />
+      <Skeleton width="5rem" class="mb-2" />
+      <Skeleton height="2rem" class="mb-2" />
+      <Skeleton width="10rem" height="4rem" />
     </div>
   </div>
 </template>

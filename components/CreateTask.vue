@@ -50,7 +50,7 @@ function onClickCreateSchedule() {
 }
 
 function onClickDeleteSchedule(schedule: Schedule) {
-  newTaskItem.value.schedule.forEach(item => {
+  newTaskItem.value.schedule.forEach((item) => {
     if (item.name === schedule.name) {
       newTaskItem.value.schedule.splice(newTaskItem.value.schedule.indexOf(item), 1);
     }
@@ -125,8 +125,8 @@ async function onClickCreateTask() {
       </div>
       <template #footer>
         <div class="flex justify-end gap-2">
-          <Button type="button" label="取消" severity="secondary" @click="visible = false"></Button>
-          <Button type="button" label="创建" @click="onClickCreateTask()"></Button>
+          <Button type="button" label="取消" severity="secondary" @click="visible = false" />
+          <Button type="button" label="创建" @click="onClickCreateTask()" />
         </div>
       </template>
     </Dialog>

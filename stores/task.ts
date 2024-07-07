@@ -56,8 +56,8 @@ export const useTaskStore = defineStore("task", () => {
       body: { id: schedule.id!, type: "schedule" },
     });
 
-    tasks.value.forEach(task => {
-      task.schedule = task.schedule.filter(s => s.id !== schedule.id);
+    tasks.value.forEach((task) => {
+      task.schedule = task.schedule.filter((s) => s.id !== schedule.id);
     });
   };
 
@@ -67,18 +67,30 @@ export const useTaskStore = defineStore("task", () => {
       body: { id: task.tid, type: "task" },
     });
 
-    tasks.value = tasks.value.filter(t => t.tid !== task.tid);
+    tasks.value = tasks.value.filter((t) => t.tid !== task.tid);
   };
 
-  const updateTaskSchedule = (tid: string, id: number) => {
-    tasks.value.forEach(task => {
-      if (task.tid === tid) {
-        task.schedule.forEach(schedule => {
-          if (schedule.id === id) {
-            schedule.finish = !schedule.finish;
-          }
-        });
-      }
+  const updateTaskSchedule = async (id: number) => {
+    let targetFinishStatus: boolean = false;
+    const updatedTask: TaskItem[] = [];
+    tasks.value.forEach((task) => {
+      const schedules: Schedule[] = [];
+      task.schedule.forEach((schedule) => {
+        if (schedule.id === id) {
+          targetFinishStatus = !schedule.finish;
+          schedule.finish = !schedule.finish;
+        }
+        schedules.push(schedule);
+      });
+      updatedTask.push({
+        ...task,
+        schedule: schedules,
+      });
+    });
+    tasks.value = updatedTask;
+    await $fetch("/api/task", {
+      method: "put",
+      body: { id, finish: targetFinishStatus },
     });
   };
 

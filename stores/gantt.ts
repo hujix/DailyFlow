@@ -15,8 +15,8 @@ export const useGanttStore = defineStore("gantt", () => {
       const end = now.add(25, "days").format("YYYY-MM-DD");
       return [start, end];
     } else if (
-      dateRange.value.length === 1 ||
-      (dateRange.value.length === 2 && dateRange.value[1] === null)
+      dateRange.value.length === 1
+      || (dateRange.value.length === 2 && dateRange.value[1] === null)
     ) {
       const current = dayjs(dateRange.value[0]);
       const start = current.format("YYYY-MM-DD");

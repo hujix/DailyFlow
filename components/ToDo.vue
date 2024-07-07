@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
-import { ref } from "vue";
 
 import { useTaskStore } from "@/stores/task";
 
@@ -11,10 +10,14 @@ const today = dayjs();
 
 function showTodayTask(schedule: Schedule): boolean {
   const start = dayjs(schedule.days[0]);
-  if (today.diff(start, "day") % schedule.cycle !== 0) {
+  if (today.diff(start, "day") % Number(schedule.cycle) !== 0) {
     return false;
   }
-  if (today.isAfter(start, "day") && today.isBefore(dayjs(schedule.days[1]), "day")) {
+  const end = dayjs(schedule.days[1]);
+  if (today.isSame(start, "day") || today.isSame(end, "day")) {
+    return true;
+  }
+  if (today.isAfter(start, "day") && today.isBefore(end, "day")) {
     return true;
   }
   return false;
@@ -54,19 +57,22 @@ const todayTaskCount: ComputedRef<number> = computed(() => {
   }
   return count;
 });
+async function updateTaskSchedule(id: number) {
+  await taskStore.updateTaskSchedule(id);
+}
 </script>
 
 <template>
   <Card class="w-64">
-    <template #title>今日待办：（{{ doneTaskCount }}/{{ todayTaskCount }}）</template>
+    <template #title> 今日待办：（{{ doneTaskCount }}/{{ todayTaskCount }}） </template>
     <template #content>
       <ScrollPanel class="w-64">
         <div class="w-f flex flex-col gap-2">
           <template v-for="task of tasks" :key="task.tid">
             <template v-for="schedule in task.schedule" :key="`${task.tid}-${schedule.id}`">
               <div
-                class="inline-flex items-center gap-2 truncate"
-                @click="taskStore.updateTaskSchedule(task.tid, schedule.id)"
+                class="inline-flex w-full items-center gap-2 truncate py-1"
+                @click="updateTaskSchedule(schedule.id!)"
               >
                 <Checkbox v-model="schedule.finish" :binary="true" />
                 <label> [{{ task.name }}] : {{ schedule.name }} </label>

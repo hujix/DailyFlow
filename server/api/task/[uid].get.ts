@@ -1,7 +1,7 @@
 import { serverSupabaseClient } from "#supabase/server";
-import type { Database } from "~/types/supabase";
+import type { Database } from "~/types/supabase.type";
 
-export default defineEventHandler(async event => {
+export default defineEventHandler(async (event) => {
   const supabase = await serverSupabaseClient<Database>(event);
 
   const uid = event.context.params?.uid;

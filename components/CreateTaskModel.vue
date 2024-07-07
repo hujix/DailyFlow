@@ -42,7 +42,7 @@ async function onClickDeleteTask(task: TaskItem) {
     >
       <template #header>
         <div class="inline-flex items-center justify-center gap-2">
-          <i class="pi pi-box"></i>
+          <i class="pi pi-box" />
           <span class="whitespace-nowrap font-bold">任务管理</span>
         </div>
       </template>

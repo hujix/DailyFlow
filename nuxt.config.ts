@@ -58,5 +58,5 @@ export default defineNuxtConfig({
     autoImport: true,
   },
 
-  compatibilityDate: "2024-07-04",
+  compatibilityDate: "2024-07-07",
 });
