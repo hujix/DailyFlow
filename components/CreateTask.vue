@@ -9,7 +9,7 @@ const visible = ref(false);
 const visibleRight = ref(false);
 const cycleOptions = ref(["1", "2", "3", "4", "5", "6", "7"]);
 
-const presetsColors: Ref<{ bg: string;text: string }[]> = ref([
+const presetsColors: Ref<{ bg: string; text: string }[]> = ref([
   { bg: "#ff6b6b", text: "#ffffff" },
   { bg: "#ff8f6b", text: "#ffffff" },
   { bg: "#ffd66b", text: "#ffffff" },
@@ -67,7 +67,7 @@ function onClickDeleteSchedule(schedule: Schedule) {
     }
   });
 }
-async function onClickChangePresetColor(item: { bg: string;text: string }) {
+async function onClickChangePresetColor(item: { bg: string; text: string }) {
   newTaskSchedule.value.backgroundColor = item.bg;
   newTaskSchedule.value.textColor = item.text;
 }
@@ -172,23 +172,23 @@ async function onClickCreateTask() {
         </div>
         <div>
           <span>配色：</span>
-          <div class="border p-3 rounded-md">
+          <div class="rounded-md border p-3">
             <div class="flex flex-col rounded-md">
               <div
                 :style="{
                   backgroundColor: newTaskSchedule.backgroundColor,
                   color: newTaskSchedule.textColor,
                 }"
-                class="h-10 rounded-md flex items-center justify-center text-2xl"
+                class="flex h-10 items-center justify-center rounded-md text-2xl"
               >
                 {{ newTaskSchedule.name.length === 0 ? "示例文本" : newTaskSchedule.name }}
               </div>
             </div>
-            <div class="grid grid-cols-4 gap-2 mt-2 border-2 p-2 rounded-md">
+            <div class="mt-2 grid grid-cols-4 gap-2 rounded-md border-2 p-2">
               <div v-for="item in presetsColors" :key="`${item.bg}:${item.text}`">
                 <Button
                   :style="{ backgroundColor: item.bg, color: item.text }"
-                  class="h-10 w-20 rounded-md text-xl flex items-center justify-center border-none"
+                  class="flex h-10 w-20 items-center justify-center rounded-md border-none text-xl"
                   @click="onClickChangePresetColor(item)"
                 >
                   文字
