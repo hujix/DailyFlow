@@ -9,6 +9,17 @@ const visible = ref(false);
 const visibleRight = ref(false);
 const cycleOptions = ref(["1", "2", "3", "4", "5", "6", "7"]);
 
+const presetsColors: Ref<{ bg: string;text: string }[]> = ref([
+  { bg: "#ff6b6b", text: "#ffffff" },
+  { bg: "#ff8f6b", text: "#ffffff" },
+  { bg: "#ffd66b", text: "#ffffff" },
+  { bg: "#6bff6b", text: "#ffffff" },
+  { bg: "#6b99ff", text: "#ffffff" },
+  { bg: "#6b6bff", text: "#ffffff" },
+  { bg: "#ff6bff", text: "#ffffff" },
+  { bg: "#ffffff", text: "#000000" },
+]);
+
 const toast = useToast();
 
 const newTaskItem: Ref<TaskItem> = ref({
@@ -23,7 +34,7 @@ const newTaskSchedule: Ref<Schedule> = ref({
   name: "",
   desc: "",
   cycle: "1",
-  finish: false,
+  finish: [],
   backgroundColor: "",
   textColor: "",
   days: [],
@@ -41,7 +52,7 @@ function onClickCreateSchedule() {
     name: "",
     desc: "",
     cycle: "1",
-    finish: false,
+    finish: [],
     backgroundColor: "",
     textColor: "",
     days: [],
@@ -55,6 +66,10 @@ function onClickDeleteSchedule(schedule: Schedule) {
       newTaskItem.value.schedule.splice(newTaskItem.value.schedule.indexOf(item), 1);
     }
   });
+}
+async function onClickChangePresetColor(item: { bg: string;text: string }) {
+  newTaskSchedule.value.backgroundColor = item.bg;
+  newTaskSchedule.value.textColor = item.text;
 }
 
 async function onClickCreateTask() {
@@ -155,20 +170,31 @@ async function onClickCreateTask() {
             aria-labelledby="basic"
           />
         </div>
-        <div class="flex flex-row items-center justify-start gap-x-10">
-          <span>背景色： <ColorPicker v-model="newTaskSchedule.backgroundColor" /></span>
-          <span>文字颜色： <ColorPicker v-model="newTaskSchedule.textColor" /></span>
-        </div>
-        <div class="flex flex-col rounded-md border p-3">
-          <span>颜色预览：</span>
-          <div
-            :style="{
-              backgroundColor: `#${newTaskSchedule.backgroundColor}`,
-              color: `#${newTaskSchedule.textColor}`,
-            }"
-            class="h-10 rounded-md text-center text-2xl"
-          >
-            {{ newTaskSchedule.name.length === 0 ? "示例文本" : newTaskSchedule.name }}
+        <div>
+          <span>配色：</span>
+          <div class="border p-3 rounded-md">
+            <div class="flex flex-col rounded-md">
+              <div
+                :style="{
+                  backgroundColor: newTaskSchedule.backgroundColor,
+                  color: newTaskSchedule.textColor,
+                }"
+                class="h-10 rounded-md flex items-center justify-center text-2xl"
+              >
+                {{ newTaskSchedule.name.length === 0 ? "示例文本" : newTaskSchedule.name }}
+              </div>
+            </div>
+            <div class="grid grid-cols-4 gap-2 mt-2 border-2 p-2 rounded-md">
+              <div v-for="item in presetsColors" :key="`${item.bg}:${item.text}`">
+                <Button
+                  :style="{ backgroundColor: item.bg, color: item.text }"
+                  class="h-10 w-20 rounded-md text-xl flex items-center justify-center border-none"
+                  @click="onClickChangePresetColor(item)"
+                >
+                  文字
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="mt-10 flex flex-row items-center justify-around">
