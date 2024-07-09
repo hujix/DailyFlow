@@ -91,7 +91,8 @@ async function onClickDeleteTask(task: TaskItem) {
               周期（天）：{{ schedule.cycle }}
             </div>
             <div class="flex flex-row items-center justify-start gap-2">
-              <span>背景色： <ColorPicker :model-value="schedule.backgroundColor.substring(1)" disabled /></span>
+              <span>背景色：
+                <ColorPicker :model-value="schedule.backgroundColor.substring(1)" disabled /></span>
               <span>文字颜色： <ColorPicker :model-value="schedule.textColor.substring(1)" disabled /></span>
             </div>
           </div>

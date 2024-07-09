@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { defineStore } from "pinia";
 
 export const useTaskStore = defineStore("task", () => {
@@ -71,14 +72,23 @@ export const useTaskStore = defineStore("task", () => {
   };
 
   const updateTaskSchedule = async (id: number) => {
-    let targetFinishStatus: boolean = false;
+    const updateItem: { update: boolean; finish: string[] } = {
+      update: false,
+      finish: [],
+    };
+    const todayDate: string = dayjs().format("YYYY-MM-DD");
     const updatedTask: TaskItem[] = [];
     tasks.value.forEach((task) => {
       const schedules: Schedule[] = [];
       task.schedule.forEach((schedule) => {
         if (schedule.id === id) {
-          targetFinishStatus = !schedule.finish;
-          schedule.finish = !schedule.finish;
+          if (schedule.finish.includes(todayDate)) {
+            schedule.finish = schedule.finish.filter((date) => date !== todayDate);
+          } else {
+            schedule.finish.push(todayDate);
+          }
+          updateItem.update = true;
+          updateItem.finish = schedule.finish;
         }
         schedules.push(schedule);
       });
@@ -88,10 +98,12 @@ export const useTaskStore = defineStore("task", () => {
       });
     });
     tasks.value = updatedTask;
-    await $fetch("/api/task", {
-      method: "put",
-      body: { id, finish: targetFinishStatus },
-    });
+    if (updateItem.update) {
+      await $fetch("/api/task", {
+        method: "put",
+        body: { id, finish: updateItem.finish },
+      });
+    }
   };
 
   return { tasks, createTask, updateTasks, deleteTask, deleteSchedule, updateTaskSchedule };

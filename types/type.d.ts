@@ -3,7 +3,7 @@ declare interface Schedule {
   name: string;
   desc: string;
   cycle: string;
-  finish: boolean;
+  finish: string[];
   backgroundColor: string;
   textColor: string;
   days: string[];

@@ -2,11 +2,8 @@ import { serverSupabaseClient } from "#supabase/server";
 import type { Database } from "~/types/supabase.type";
 
 export default defineEventHandler(async (event) => {
-  const requestBody = (await readBody(event)) as { id: number; finish: boolean };
+  const requestBody = (await readBody(event)) as { id: number; finish: string[] };
 
-  if (requestBody.id === undefined || requestBody.finish === undefined) {
-    throw createError({ status: 400, message: "Missing request body!" });
-  }
   const supabase = await serverSupabaseClient<Database>(event);
 
   const updateResult = await supabase

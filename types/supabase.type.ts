@@ -6,11 +6,11 @@ export interface Database {
       schedule: {
         Row: {
           background_color: string | null;
-          cycle: number | null;
           created_at: string;
+          cycle: string | null;
           desc: string | null;
           end_time: string;
-          finish: boolean;
+          finish: string[] | null;
           id: number;
           name: string | null;
           start_time: string;
@@ -19,11 +19,11 @@ export interface Database {
         };
         Insert: {
           background_color?: string | null;
-          cycle?: number | null;
           created_at?: string;
+          cycle?: string | null;
           desc?: string | null;
           end_time: string;
-          finish?: boolean;
+          finish?: string[] | null;
           id?: number;
           name?: string | null;
           start_time: string;
@@ -32,11 +32,11 @@ export interface Database {
         };
         Update: {
           background_color?: string | null;
-          cycle?: number | null;
           created_at?: string;
+          cycle?: string | null;
           desc?: string | null;
           end_time?: string;
-          finish?: boolean;
+          finish?: string[] | null;
           id?: number;
           name?: string | null;
           start_time?: string;
