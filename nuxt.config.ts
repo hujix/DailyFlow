@@ -1,20 +1,23 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import process from "node:process";
 
-import Aura from "@primevue/themes/aura";
-
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
+
   modules: [
     "@pinia/nuxt",
     "@nuxt/eslint",
     "@nuxtjs/tailwindcss",
-    "@primevue/nuxt-module",
     "@nuxtjs/supabase",
+    "shadcn-nuxt",
+    "nuxt-lucide-icons",
   ],
-
-  css: ["primeicons/primeicons.css"],
+  runtimeConfig: {
+    public: {
+      baseUrl: process.env.BASE_URL || "http://localhost:3000",
+    },
+  },
 
   typescript: {
     typeCheck: false,
@@ -40,23 +43,5 @@ export default defineNuxtConfig({
     redirect: false,
   },
 
-  primevue: {
-    options: {
-      theme: {
-        preset: Aura,
-        options: {
-          darkModeSelector: "system",
-          cssLayer: {
-            name: "primevue",
-            order: "tailwind-base, primevue, tailwind-utilities;",
-          },
-        },
-      },
-      ripple: true,
-      inputVariant: "outlined",
-    },
-    autoImport: true,
-  },
-
-  compatibilityDate: "2024-07-07",
+  compatibilityDate: "2024-07-10",
 });

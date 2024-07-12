@@ -20,6 +20,15 @@ export default withNuxt(
       "style/comma-dangle": ["error", "only-multiline"],
       "style/brace-style": ["error", "1tbs", { allowSingleLine: false }],
       "style/arrow-parens": ["error", "always"],
+      "vue/singleline-html-element-content-newline": [
+        "error",
+        {
+          ignoreWhenNoAttributes: true,
+          ignoreWhenEmpty: true,
+          ignores: ["pre", "textarea"],
+          externalIgnores: [],
+        },
+      ],
       "vue/html-self-closing": [
         "error",
         {
