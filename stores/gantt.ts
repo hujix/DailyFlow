@@ -12,7 +12,7 @@ export const useGanttStore = defineStore("gantt", () => {
     if (dateRange.value.length === 0) {
       const now = dayjs();
       const start = now.subtract(5, "days").format("YYYY-MM-DD");
-      const end = now.add(25, "days").format("YYYY-MM-DD");
+      const end = now.add(20, "days").format("YYYY-MM-DD");
       return [start, end];
     } else if (
       dateRange.value.length === 1
@@ -20,7 +20,7 @@ export const useGanttStore = defineStore("gantt", () => {
     ) {
       const current = dayjs(dateRange.value[0]);
       const start = current.format("YYYY-MM-DD");
-      const end = current.add(30, "days").format("YYYY-MM-DD");
+      const end = current.add(20, "days").format("YYYY-MM-DD");
       return [start, end];
     } else {
       const start = dayjs(dateRange.value[0]).format("YYYY-MM-DD");

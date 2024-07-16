@@ -36,6 +36,9 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  tailwindcss: {
+    viewer: false,
+  },
 
   supabase: {
     url: process.env.SUPABASE_URL,

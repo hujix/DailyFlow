@@ -67,38 +67,35 @@ const tasks: ComputedRef<TaskItem[]> = computed(() => {
 </script>
 
 <template>
-  <Card class="w-64">
-    <template #title>
-      今日待办：（{{ doneTaskCount }}/{{ todayTaskCount }}）
-    </template>
-    <template #content>
-      <ScrollPanel class="w-64">
-        <div class="w-f flex flex-col gap-2">
-          <template v-for="task of tasks" :key="task.tid">
-            <template v-for="schedule in task.schedule" :key="schedule.id">
-              <div
-                class="inline-flex w-full items-center gap-2 truncate py-1"
-                @click.stop="taskStore.updateTaskSchedule(schedule.id!)"
-              >
-                <Checkbox
-                  v-model="finishDates"
-                  :input-id="`${schedule.id}-${today.format('YYYY-MM-DD')}`"
-                  name="finishDates"
-                  :value="`${schedule.id}:${today.format('YYYY-MM-DD')}`"
-                />
-                <label :for="`${schedule.id}-${today.format('YYYY-MM-DD')}`">
-                  <span
-                    v-if="!finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}}`)"
-                  >
-                    [{{ task.name }}] : {{ schedule.name }}
-                  </span>
-                  <span v-else><del>[{{ task.name }}] : {{ schedule.name }}</del></span>
-                </label>
-              </div>
-            </template>
-          </template>
-        </div>
-      </ScrollPanel>
-    </template>
-  </Card>
+  <div class="mt-4 h-full w-64 rounded-md border p-2">
+    <span>今日待办：（{{ doneTaskCount }}/{{ todayTaskCount }}）</span>
+    <div class="flex w-full flex-col">
+      <template v-for="task of tasks" :key="task.tid">
+        <template v-for="schedule in task.schedule" :key="schedule.id">
+          <!-- <div
+            class="inline-flex w-full items-center gap-2 truncate py-1"
+            @click.stop="taskStore.updateTaskSchedule(schedule.id!)"
+          > -->
+          <div class="inline-flex w-full items-center gap-2 truncate py-1">
+            <Checkbox
+              :id="`${schedule.id}-${today.format('YYYY-MM-DD')}`"
+              :checked="finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}}`)"
+              name="finishDates"
+              class="checked:translate-x-1"
+              :value="`${schedule.id}:${today.format('YYYY-MM-DD')}`"
+              @update:checked="finishDates.push(`${schedule.id}:${today.format('YYYY-MM-DD')}}`)"
+            />
+            <label :for="`${schedule.id}-${today.format('YYYY-MM-DD')}`">
+              <span v-if="!finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}}`)">
+                [{{ task.name }}] : {{ schedule.name }}
+              </span>
+              <span v-else>
+                <del>[{{ task.name }}] : {{ schedule.name }}</del>
+              </span>
+            </label>
+          </div>
+        </template>
+      </template>
+    </div>
+  </div>
 </template>

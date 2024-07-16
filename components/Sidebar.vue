@@ -8,12 +8,10 @@ import { cn } from "@/lib/utils";
   <div :class="cn($attrs.class ?? '')">
     <div class="space-y-4">
       <div class="px-3 py-2">
-        <h2 class="h-12 from-green-600 bg-clip-text pb-2 text-center text-2xl font-bold">
-          DailyFlow
-        </h2>
+        <h2 class="h-12 bg-clip-text pb-2 text-center text-2xl font-bold">DailyFlow</h2>
         <Separator />
         <div class="my-2 space-y-1">
-          <Button variant="secondary" class="w-full justify-start">
+          <Button variant="secondary" class="w-full justify-start bg-white">
             <House class="mr-2 h-4 w-4" />
             首页
           </Button>

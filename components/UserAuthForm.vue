@@ -81,9 +81,7 @@ async function handleComplete(e: string[]) {
         <span class="w-full border-t" />
       </div>
       <div class="relative flex justify-center text-xs uppercase">
-        <span class="bg-background px-2 text-muted-foreground">
-          第三方登录
-        </span>
+        <span class="bg-background px-2 text-muted-foreground">第三方登录</span>
       </div>
     </div>
     <Button variant="outline" type="button" disabled>

@@ -14,6 +14,7 @@ const config = {
   bracketSpacing: true,
   endOfLine: "auto",
   arrowParens: "always",
+  htmlWhitespaceSensitivity: "ignore",
   vueIndentScriptAndStyle: false,
   proseWrap: "never",
   plugins: ["prettier-plugin-jsdoc", "prettier-plugin-tailwindcss"],

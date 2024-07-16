@@ -36,34 +36,24 @@ watchEffect(() => {
       <div class="relative z-20 mt-auto">
         <blockquote class="space-y-2">
           <p class="text-lg">
-            “忙碌的人，心中有无数的小虫在咬，拖延的人，却用时间的刀割断了自己的手臂。DailyFlow，不是束缚，而是自由的钥匙。”
+            “忙碌的人，心中有无数的小虫在咬。拖延的人，却用时间的刀割断了自己的手臂。DailyFlow，不是束缚，而是自由的钥匙。”
           </p>
-          <footer class="text-sm">
-            鲁迅
-          </footer>
+          <footer class="text-sm">鲁迅</footer>
         </blockquote>
       </div>
     </div>
     <div class="lg:p-8">
       <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div class="flex flex-col space-y-2 text-center">
-          <h1 class="text-2xl font-semibold tracking-tight">
-            登陆/创建账户
-          </h1>
-          <p class="text-sm text-muted-foreground">
-            输入邮箱账号来登陆或注册
-          </p>
+          <h1 class="text-2xl font-semibold tracking-tight">登陆 DailyFlow</h1>
+          <p class="text-sm text-muted-foreground">输入邮箱账号来登陆或注册</p>
         </div>
         <UserAuthForm />
         <p class="px-8 text-center text-sm text-muted-foreground">
           点击继续则代表，您同意我们的
-          <a href="/terms" class="underline underline-offset-4 hover:text-primary">
-            服务条款
-          </a>
+          <a href="/" class="underline underline-offset-4 hover:text-primary">服务条款</a>
           和
-          <a href="/privacy" class="underline underline-offset-4 hover:text-primary">
-            隐私策略
-          </a>
+          <a href="/" class="underline underline-offset-4 hover:text-primary">隐私策略</a>
           。
         </p>
       </div>
