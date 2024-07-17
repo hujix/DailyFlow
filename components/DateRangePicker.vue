@@ -1,22 +1,42 @@
 <script setup lang="ts">
 import { CalendarDate, type DateValue, isEqualMonth } from "@internationalized/date";
+import dayjs from "dayjs";
 import { LucideChevronLeft } from "lucide-vue-next";
-import { type DateRange, RangeCalendarRoot, useDateFormatter } from "radix-vue";
+import { RangeCalendarRoot, useDateFormatter } from "radix-vue";
+import type { DateRange } from "radix-vue";
 import { type Grid, createMonth, toDate } from "radix-vue/date";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const value = ref({
-  start: new CalendarDate(2024, 6, 20),
-  end: new CalendarDate(2024, 7, 20).add({ days: 20 }),
-}) as Ref<DateRange>;
+const ganttStore = useGanttStore();
+const { datePickerRange } = storeToRefs(ganttStore);
 
 const locale = ref("zh-CN");
 const formatter = useDateFormatter(locale.value);
 
-const placeholder = ref(value.value.start) as Ref<DateValue>;
-const secondMonthPlaceholder = ref(value.value.end) as Ref<DateValue>;
+const currentDateRange: Ref<DateRange> = ref({
+  start: new CalendarDate(
+    dayjs(datePickerRange.value.start).year(),
+    dayjs(datePickerRange.value.start).month() + 1,
+    dayjs(datePickerRange.value.start).date()
+  ),
+  end: new CalendarDate(
+    dayjs(datePickerRange.value.end).year(),
+    dayjs(datePickerRange.value.end).month() + 1,
+    dayjs(datePickerRange.value.end).date()
+  ),
+}) as Ref<DateRange>;
+
+watch(currentDateRange, (newValue) => {
+  datePickerRange.value = {
+    start: newValue.start?.toString() ?? dayjs().subtract(5, "day").format("YYYY-MM-DD"),
+    end: newValue.end?.toString() ?? dayjs().add(25, "day").format("YYYY-MM-DD"),
+  };
+});
+
+const placeholder = ref(currentDateRange.value.start) as Ref<DateValue>;
+const secondMonthPlaceholder = ref(currentDateRange.value.end) as Ref<DateValue>;
 
 const firstMonth = ref(
   createMonth({
@@ -77,20 +97,23 @@ watch(secondMonthPlaceholder, (_secondMonthPlaceholder) => {
       <Button
         variant="outline"
         :class="
-          cn('w-[280px] justify-start text-left font-normal', !value && 'text-muted-foreground')
+          cn(
+            'w-[280px] justify-start text-left font-normal',
+            !currentDateRange && 'text-muted-foreground'
+          )
         "
       >
         <LucideCalendarDays class="mr-2 h-4 w-4" />
-        <template v-if="value.start">
-          <template v-if="value.end">
+        <template v-if="currentDateRange.start">
+          <template v-if="currentDateRange.end">
             {{
-              formatter.custom(toDate(value.start), {
+              formatter.custom(toDate(currentDateRange.start), {
                 dateStyle: "medium",
               })
             }}
             -
             {{
-              formatter.custom(toDate(value.end), {
+              formatter.custom(toDate(currentDateRange.end), {
                 dateStyle: "medium",
               })
             }}
@@ -98,7 +121,7 @@ watch(secondMonthPlaceholder, (_secondMonthPlaceholder) => {
 
           <template v-else>
             {{
-              formatter.custom(toDate(value.start), {
+              formatter.custom(toDate(currentDateRange.start), {
                 dateStyle: "medium",
               })
             }}
@@ -110,7 +133,7 @@ watch(secondMonthPlaceholder, (_secondMonthPlaceholder) => {
     <PopoverContent class="w-auto p-0">
       <RangeCalendarRoot
         v-slot="{ weekDays }"
-        v-model="value"
+        v-model="currentDateRange"
         v-model:placeholder="placeholder"
         class="p-3"
       >

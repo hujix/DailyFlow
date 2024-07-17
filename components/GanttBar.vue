@@ -9,7 +9,7 @@ import { useTaskStore } from "@/stores/task";
 const taskStore = useTaskStore();
 
 const ganttStore = useGanttStore();
-const { ganttDateRange } = storeToRefs(ganttStore);
+const { datePickerRange } = storeToRefs(ganttStore);
 </script>
 
 <template>
@@ -25,13 +25,12 @@ const { ganttDateRange } = storeToRefs(ganttStore);
     </div>
     <ClientOnly>
       <Gantt
-        class="!h-fit"
         :data="taskStore.tasks"
         item-text="任务"
         :active-date="dayjs().format('YYYY-MM-DD')"
         date-text="时间"
-        item-height="25"
-        :date-range-list="ganttDateRange"
+        :item-height="25"
+        :date-range-list="[datePickerRange.start, datePickerRange.end]"
       />
       <template #fallback>
         <div class="flex flex-col space-y-3">

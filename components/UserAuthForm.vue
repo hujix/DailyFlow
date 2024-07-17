@@ -7,7 +7,7 @@ const supabase = useSupabaseClient();
 
 const isLoading = ref(false);
 
-const email = ref("1668819658@qq.com");
+const email = ref();
 
 const countDown = ref(60);
 
