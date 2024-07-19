@@ -18,7 +18,7 @@ const { data } = await useFetch(`/api/task/${user.value.id}`, {
 });
 
 if (data.value?.status === 200) {
-  taskStore.updateTasks(data.value.data);
+  taskStore.updateTasks(data.value.data as TaskItem[]);
 }
 </script>
 

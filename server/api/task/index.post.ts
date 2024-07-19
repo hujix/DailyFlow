@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
 
   const supabase = await serverSupabaseClient<Database>(event);
   const taskResult = await supabase.from("task").insert({
-    uid: "10001",
     tid: body.tid,
     type: body.type,
     name: body.name,
@@ -25,6 +24,7 @@ export default defineEventHandler(async (event) => {
   for (const schedule of body.schedule) {
     newSchedules.push({
       tid: body.tid,
+      sid: schedule.id,
       name: schedule.name,
       desc: schedule.desc,
       text_color: schedule.textColor,

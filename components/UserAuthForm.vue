@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { useToast } from "./ui/toast/use-toast";
-
+import { useToast } from "@/components/ui/toast/use-toast";
 import { cn } from "@/lib/utils";
 
 const supabase = useSupabaseClient();

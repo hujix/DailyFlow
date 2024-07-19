@@ -1,5 +1,5 @@
 declare interface Schedule {
-  id?: number;
+  id: string;
   name: string;
   desc: string;
   cycle: string;

@@ -1,15 +1,14 @@
-import { serverSupabaseClient } from "#supabase/server";
+import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
 import type { Database } from "~/types/supabase.type";
 
 export default defineEventHandler(async (event) => {
   const supabase = await serverSupabaseClient<Database>(event);
 
-  const uid = event.context.params?.uid;
-
-  if (!uid) {
+  const user = await serverSupabaseUser(event);
+  if (!user) {
     return {
-      status: 400,
-      message: "Invalid uid",
+      status: 401,
+      message: "用户校验失败",
       data: [],
     };
   }
@@ -21,15 +20,23 @@ export default defineEventHandler(async (event) => {
       tid,
       type,
       name,
-      schedule(id,name,cycle,desc,background_color,finish,text_color,start_time,end_time)
+      schedule(sid,name,cycle,desc,background_color,finish,text_color,start_time,end_time)
       `
     )
-    .eq("uid", uid);
+    .eq("uid", user.id);
+
+  if (error) {
+    return {
+      status: error.code,
+      message: error.message,
+      data: [],
+    };
+  }
 
   if (data === null) {
     return {
       status,
-      message: error,
+      message: "unknown error",
       data: [],
     };
   }

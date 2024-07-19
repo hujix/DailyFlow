@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { defineStore } from "pinia";
+import { v4 as uuidv4 } from "uuid";
 
 export const useTaskStore = defineStore("task", () => {
   const tasks: Ref<TaskItem[]> = ref([]);
@@ -7,17 +8,15 @@ export const useTaskStore = defineStore("task", () => {
   const updateTasks = (currentTasks: any[]) => {
     tasks.value = [];
     for (const task of currentTasks) {
-      const schedules = [];
-      for (const s of task.schedule) {
+      const schedules: Schedule[] = [];
+      for (const schedule of task.schedule) {
         schedules.push({
-          id: s.id,
-          name: s.name,
-          desc: s.desc,
-          backgroundColor: s.background_color,
-          finish: s.finish,
-          cycle: String(s.cycle),
-          textColor: s.text_color,
-          days: [s.start_time, s.end_time],
+          ...schedule,
+          id: schedule.sid,
+          backgroundColor: schedule.background_color,
+          cycle: String(schedule.cycle),
+          textColor: schedule.text_olor,
+          days: [schedule.start_time, schedule.end_time],
         });
       }
       tasks.value.push({
@@ -35,9 +34,7 @@ export const useTaskStore = defineStore("task", () => {
     for (const sc of task.schedule) {
       newSchedules.push({
         ...sc,
-        id: Number((Math.random() * 1000).toFixed(0)),
-        textColor: `#${sc.textColor}`,
-        backgroundColor: `#${sc.backgroundColor}`,
+        id: uuidv4(),
       });
     }
     const newTask = { ...task };
@@ -54,7 +51,7 @@ export const useTaskStore = defineStore("task", () => {
   const deleteSchedule = async (schedule: Schedule): Promise<undefined> => {
     await $fetch("/api/task", {
       method: "delete",
-      body: { id: schedule.id!, type: "schedule" },
+      body: { id: schedule.id, type: "schedule" },
     });
 
     tasks.value.forEach((task) => {
@@ -71,7 +68,7 @@ export const useTaskStore = defineStore("task", () => {
     tasks.value = tasks.value.filter((t) => t.tid !== task.tid);
   };
 
-  const updateTaskSchedule = async (id: number) => {
+  const updateTaskSchedule = async (sid: string): Promise<boolean | string | undefined> => {
     const updateItem: { update: boolean; finish: string[] } = {
       update: false,
       finish: [],
@@ -81,7 +78,10 @@ export const useTaskStore = defineStore("task", () => {
     tasks.value.forEach((task) => {
       const schedules: Schedule[] = [];
       task.schedule.forEach((schedule) => {
-        if (schedule.id === id) {
+        if (schedule.id === sid) {
+          if (schedule.finish === null) {
+            schedule.finish = [];
+          }
           if (schedule.finish.includes(todayDate)) {
             schedule.finish = schedule.finish.filter((date) => date !== todayDate);
           } else {
@@ -98,12 +98,23 @@ export const useTaskStore = defineStore("task", () => {
       });
     });
     tasks.value = updatedTask;
+
     if (updateItem.update) {
-      await $fetch("/api/task", {
-        method: "put",
-        body: { id, finish: updateItem.finish },
-      });
+      try {
+        const fetchResult = await $fetch("/api/task", {
+          method: "put",
+          body: { sid, finish: updateItem.finish },
+        });
+        if (fetchResult.status === 200) {
+          return true;
+        } else {
+          return fetchResult.message;
+        }
+      } catch (error) {
+        return String(error);
+      }
     }
+    return undefined;
   };
 
   return { tasks, createTask, updateTasks, deleteTask, deleteSchedule, updateTaskSchedule };

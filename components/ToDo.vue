@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
 
+import { useToast } from "@/components/ui/toast/use-toast";
 import { useTaskStore } from "@/stores/task";
 
 const taskStore = useTaskStore();
 const { tasks: sourceTasks } = storeToRefs(taskStore);
+
+const { toast } = useToast();
 
 const today = dayjs();
 
@@ -38,7 +41,7 @@ const tasks: ComputedRef<TaskItem[]> = computed(() => {
   for (const task of sourceTasks.value) {
     const current = unref(task);
     const schedules = task.schedule.filter((item) => {
-      if (item.finish) {
+      if (item.finish !== null) {
         item.finish.forEach((date) => {
           if (!finishDates.value.includes(`${item.id}:${date}`)) {
             finishDates.value.push(`${item.id}:${date}`);
@@ -64,38 +67,60 @@ const tasks: ComputedRef<TaskItem[]> = computed(() => {
   }
   return results;
 });
+
+async function onClickTaskCheckbox(sid: string) {
+  const label = `${sid}:${today.format("YYYY-MM-DD")}`;
+  let finish = false;
+  if (finishDates.value.includes(label)) {
+    finishDates.value = finishDates.value.filter((item) => item !== label);
+  } else {
+    finish = true;
+    finishDates.value.push(label);
+  }
+  const updateResult = await taskStore.updateTaskSchedule(sid);
+  if (typeof updateResult === "boolean" && updateResult) {
+    toast({
+      title: "🎉更新任务成功",
+      description: finish ? "又完成一项！杠八的！" : "再接再厉！",
+    });
+  } else if (typeof updateResult === "string") {
+    toast({
+      title: "😭更新任务失败",
+      description: updateResult,
+    });
+  }
+}
 </script>
 
 <template>
   <div class="mt-4 h-full w-64 rounded-md border p-2">
-    <span>今日待办：（{{ doneTaskCount }}/{{ todayTaskCount }}）</span>
-    <div class="flex w-full flex-col">
+    <h3 class="font-bold">今日待办：（{{ doneTaskCount }}/{{ todayTaskCount }}）</h3>
+    <ScrollArea class="mt-2 flex w-full flex-col">
       <template v-for="task of tasks" :key="task.tid">
         <template v-for="schedule in task.schedule" :key="schedule.id">
-          <!-- <div
-            class="inline-flex w-full items-center gap-2 truncate py-1"
-            @click.stop="taskStore.updateTaskSchedule(schedule.id!)"
-          > -->
-          <div class="inline-flex w-full items-center gap-2 truncate py-1">
-            <Checkbox
-              :id="`${schedule.id}-${today.format('YYYY-MM-DD')}`"
-              :checked="finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}}`)"
-              name="finishDates"
-              class="checked:translate-x-1"
-              :value="`${schedule.id}:${today.format('YYYY-MM-DD')}`"
-              @update:checked="finishDates.push(`${schedule.id}:${today.format('YYYY-MM-DD')}}`)"
-            />
-            <label :for="`${schedule.id}-${today.format('YYYY-MM-DD')}`">
-              <span v-if="!finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}}`)">
+          <div
+            class="inline-flex w-full cursor-pointer items-center justify-between gap-2 truncate rounded-md px-4 py-1 hover:bg-secondary"
+            @click="onClickTaskCheckbox(schedule.id)"
+          >
+            <label :for="`${schedule.id}-${today.format('YYYY-MM-DD')}`" class="cursor-pointer">
+              <span v-if="!finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}`)">
                 [{{ task.name }}] : {{ schedule.name }}
               </span>
               <span v-else>
                 <del>[{{ task.name }}] : {{ schedule.name }}</del>
               </span>
             </label>
+            <Checkbox
+              :id="`${schedule.id}-${today.format('YYYY-MM-DD')}`"
+              :checked="finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}`)"
+              name="finishDates"
+              class="rounded"
+              :value="`${schedule.id}:${today.format('YYYY-MM-DD')}`"
+            />
           </div>
         </template>
       </template>
-    </div>
+    </ScrollArea>
+    <Toaster />
   </div>
 </template>
