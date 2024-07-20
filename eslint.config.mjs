@@ -20,6 +20,7 @@ export default withNuxt(
       "style/comma-dangle": ["error", "only-multiline"],
       "style/brace-style": ["error", "1tbs", { allowSingleLine: false }],
       "style/arrow-parens": ["error", "always"],
+      "style/operator-linebreak": ["error", "after"],
       "vue/singleline-html-element-content-newline": [
         "error",
         {
