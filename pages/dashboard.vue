@@ -28,11 +28,6 @@ if (data.value?.status === 200) {
       <div class="mb-4 flex items-center">
         <label>时间：</label>
         <DateRangePicker />
-        <Button class="ml-2">
-          <LucidePlus class="mr-2 h-4 w-4" />
-          新建
-        </Button>
-        <!-- <CreateTaskModel /> -->
       </div>
       <ClientOnly>
         <div class="h-64">

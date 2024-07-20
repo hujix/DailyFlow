@@ -55,9 +55,6 @@ importers:
       vue3-gantt:
         specifier: 1.1.8-7
         version: 1.1.8-7(vue@3.4.31(typescript@5.5.3))
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
     devDependencies:
       "@antfu/eslint-config":
         specifier: ^2.22.0
@@ -9485,12 +9482,6 @@ packages:
       }
     engines: { node: ">= 14" }
 
-  zod@3.23.8:
-    resolution:
-      {
-        integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==,
-      }
-
 snapshots:
   "@alloc/quick-lru@5.2.0": {}
 
@@ -15841,5 +15832,3 @@ snapshots:
       archiver-utils: 5.0.2
       compress-commons: 6.0.2
       readable-stream: 4.5.2
-
-  zod@3.23.8: {}

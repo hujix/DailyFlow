@@ -95,11 +95,15 @@ async function onClickTaskCheckbox(sid: string) {
 <template>
   <div class="mt-4 h-full w-64 rounded-md border p-2">
     <h3 class="font-bold">今日待办：（{{ doneTaskCount }}/{{ todayTaskCount }}）</h3>
-    <ScrollArea class="mt-2 flex w-full flex-col">
+    <ScrollArea class="mt-2 w-full">
       <template v-for="task of tasks" :key="task.tid">
         <template v-for="schedule in task.schedule" :key="schedule.id">
-          <div
-            class="inline-flex w-full cursor-pointer items-center justify-between gap-2 truncate rounded-md px-4 py-1 hover:bg-secondary"
+          <Button
+            variant="ghost"
+            class="inline-flex w-full items-center justify-between truncate"
+            :class="{
+              'opacity-55': finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}`),
+            }"
             @click="onClickTaskCheckbox(schedule.id)"
           >
             <label :for="`${schedule.id}-${today.format('YYYY-MM-DD')}`" class="cursor-pointer">
@@ -117,7 +121,7 @@ async function onClickTaskCheckbox(sid: string) {
               class="rounded"
               :value="`${schedule.id}:${today.format('YYYY-MM-DD')}`"
             />
-          </div>
+          </Button>
         </template>
       </template>
     </ScrollArea>
