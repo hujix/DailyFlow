@@ -6,7 +6,7 @@ const supabase = useSupabaseClient();
 
 const isLoading = ref(false);
 
-const email = ref();
+const email: Ref<string> = ref("");
 
 const countDown = ref(60);
 
@@ -15,6 +15,19 @@ let timer: NodeJS.Timeout | undefined;
 const { toast } = useToast();
 
 async function signInWithEmail() {
+  if (
+    email.value === undefined ||
+    email.value.trim().length === 0 ||
+    /^[\w.-]+@[a-z0-9.-]+\.[a-z]{2,6}$/i.test(email.value) === false
+  ) {
+    toast({
+      title: "🙅‍♂️错误邮箱",
+      description: "请输入正确的邮箱地址!",
+      variant: "destructive",
+    });
+    return;
+  }
+
   isLoading.value = true;
   countDown.value = 60;
   timer = setInterval(() => {
@@ -27,6 +40,12 @@ async function signInWithEmail() {
   }, 1000);
   const { data, error } = await supabase.auth.signInWithOtp({
     email: email.value,
+    options: {
+      data: {
+        name: email.value.split("@")[0],
+        avator: String(Math.floor(Math.random() * 30) + 1001),
+      },
+    },
   });
   if (error === null && data.user === null && data.session === null) {
     toast({
@@ -58,21 +77,17 @@ async function handleComplete(e: string[]) {
   <div :class="cn('grid gap-6', $attrs.class ?? '')">
     <form @submit.prevent="signInWithEmail">
       <div class="grid gap-2">
-        <div class="flex w-full items-center gap-1.5">
-          <Input id="email" v-model="email" type="email" placeholder="Email" autofocus />
-          <Button type="submit" :disabled="isLoading">
+        <Input id="email" v-model="email" type="email" placeholder="Email" autofocus />
+        <div class="inline-flex items-center gap-2">
+          <PinInput v-model="value" placeholder="" @complete="handleComplete">
+            <PinInputGroup>
+              <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
+            </PinInputGroup>
+          </PinInput>
+          <Button type="submit" :disabled="isLoading" class="w-full">
             {{ isLoading ? `${countDown}s` : "发送" }}
           </Button>
         </div>
-        <PinInput v-model="value" placeholder="" @complete="handleComplete">
-          <PinInputGroup>
-            <PinInputInput v-for="(id, index) in 6" :key="id" :index="index" />
-          </PinInputGroup>
-        </PinInput>
-        <!-- <Button :disabled="isLoading">
-          <LucideCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-          登录
-        </Button> -->
       </div>
     </form>
     <div class="relative">
