@@ -125,6 +125,5 @@ async function onClickTaskCheckbox(sid: string) {
         </template>
       </template>
     </ScrollArea>
-    <Toaster />
   </div>
 </template>

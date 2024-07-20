@@ -9,5 +9,6 @@
       <Headbar class="my-2 w-full" />
       <slot />
     </main>
+    <Toaster />
   </div>
 </template>
