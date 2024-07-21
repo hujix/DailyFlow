@@ -1,14 +1,30 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const user = useSupabaseUser();
+const taskStore = useTaskStore();
+
+const { data } = await useFetch(`/api/task/${user.value.id}`, {
+  key: user.value.id,
+  method: "GET",
+});
+
+if (data.value?.status === 200) {
+  taskStore.updateTasks(data.value.data as TaskItem[]);
+}
+</script>
 
 <template>
-  <div class="flex h-screen w-screen overflow-x-hidden bg-background">
-    <aside class="w-64 shrink-0 border-r bg-secondary">
+  <div class="flex bg-background">
+    <aside class="h-screen w-64 border-r bg-secondary">
       <Sidebar />
     </aside>
-    <main class="container h-full overflow-y-auto">
-      <Headbar class="my-2 w-full" />
-      <slot />
-    </main>
+    <div class="container flex h-screen flex-col">
+      <header class="my-2 h-10 w-full">
+        <Headbar />
+      </header>
+      <main class="h-full overflow-y-auto">
+        <slot />
+      </main>
+    </div>
     <Toaster />
   </div>
 </template>

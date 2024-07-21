@@ -3,23 +3,9 @@ import "vue3-gantt/dist/style.css";
 import dayjs from "dayjs";
 import Gantt from "vue3-gantt";
 
-import { useGanttStore } from "@/stores/gantt";
-import { useTaskStore } from "@/stores/task";
-
 const ganttStore = useGanttStore();
 const { datePickerRange } = storeToRefs(ganttStore);
 const taskStore = useTaskStore();
-
-const user = useSupabaseUser();
-
-const { data } = await useFetch(`/api/task/${user.value.id}`, {
-  key: user.value.id,
-  method: "GET",
-});
-
-if (data.value?.status === 200) {
-  taskStore.updateTasks(data.value.data as TaskItem[]);
-}
 </script>
 
 <template>

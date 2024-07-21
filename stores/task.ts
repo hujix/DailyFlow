@@ -29,23 +29,41 @@ export const useTaskStore = defineStore("task", () => {
     }
   };
 
-  const createTask = async (task: TaskItem) => {
-    const newSchedules: Schedule[] = [];
-    for (const sc of task.schedule) {
-      newSchedules.push({
-        ...sc,
-        id: uuidv4(),
-      });
-    }
-    const newTask = { ...task };
-    newTask.schedule = newSchedules;
-    tasks.value.push(newTask);
+  // const createTask = async (task: TaskItem) => {
+  //   const newSchedules: Schedule[] = [];
+  //   for (const sc of task.schedule) {
+  //     newSchedules.push({
+  //       ...sc,
+  //       id: uuidv4(),
+  //     });
+  //   }
+  //   const newTask = { ...task };
+  //   newTask.schedule = newSchedules;
+  //   tasks.value.push(newTask);
 
+  //   const result = await $fetch("/api/task", {
+  //     method: "POST",
+  //     body: task,
+  //   });
+  //   return result;
+  // };
+  const createTask = async (task: { name: string;color: string }): Promise<string | TaskItem> => {
+    const newTask = {
+      ...task,
+      tid: uuidv4(),
+      type: "normal",
+      schedule: [],
+    };
     const result = await $fetch("/api/task", {
       method: "POST",
-      body: task,
+      body: newTask,
     });
-    return result;
+    if (result.status === 200) {
+      return newTask;
+    }
+    tasks.value.push(newTask);
+
+    return result.message;
   };
 
   const deleteSchedule = async (schedule: Schedule): Promise<undefined> => {

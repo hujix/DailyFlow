@@ -99,7 +99,7 @@ async function handleComplete(e: string[]) {
       </div>
     </div>
     <Button variant="outline" type="button" disabled>
-      <LucideCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
+      <LucideLoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
       <LucideGithub v-else class="mr-2 h-4 w-4" />
       GitHub
     </Button>

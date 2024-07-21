@@ -104,14 +104,14 @@ async function onClickTaskCheckbox(sid: string) {
             }"
             @click="onClickTaskCheckbox(schedule.id)"
           >
-            <label :for="`${schedule.id}-${today.format('YYYY-MM-DD')}`" class="cursor-pointer">
+            <Label :for="`${schedule.id}-${today.format('YYYY-MM-DD')}`" class="cursor-pointer">
               <span v-if="!finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}`)">
                 [{{ task.name }}] : {{ schedule.name }}
               </span>
               <span v-else>
                 <del>[{{ task.name }}] : {{ schedule.name }}</del>
               </span>
-            </label>
+            </Label>
             <Checkbox
               :id="`${schedule.id}-${today.format('YYYY-MM-DD')}`"
               :checked="finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}`)"
