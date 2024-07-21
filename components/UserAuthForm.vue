@@ -43,7 +43,7 @@ async function signInWithEmail() {
     options: {
       data: {
         name: email.value.split("@")[0],
-        avator: String(Math.floor(Math.random() * 30) + 1001),
+        avator: String(Math.floor(Math.random() * 53) + 1001),
       },
     },
   });
