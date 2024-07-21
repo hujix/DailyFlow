@@ -98,12 +98,12 @@ function dispatch(action: Action) {
       }
 
       state.value.toasts = state.value.toasts.map((t) =>
-        t.id === toastId || toastId === undefined
-          ? {
+        t.id === toastId || toastId === undefined ?
+            {
               ...t,
               open: false,
-            }
-          : t
+            } :
+          t
       );
       break;
     }
