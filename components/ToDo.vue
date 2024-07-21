@@ -2,7 +2,6 @@
 import dayjs from "dayjs";
 
 import { useToast } from "@/components/ui/toast/use-toast";
-import { useTaskStore } from "@/stores/task";
 
 const taskStore = useTaskStore();
 const { tasks: sourceTasks } = storeToRefs(taskStore);
@@ -98,9 +97,8 @@ async function onClickTaskCheckbox(sid: string) {
     <ScrollArea class="mt-2 w-full">
       <template v-for="task of tasks" :key="task.tid">
         <template v-for="schedule in task.schedule" :key="schedule.id">
-          <Button
-            variant="ghost"
-            class="inline-flex w-full items-center justify-between truncate"
+          <div
+            class="inline-flex w-full cursor-pointer items-center justify-between truncate rounded-md p-2 hover:bg-secondary"
             :class="{
               'opacity-55': finishDates.includes(`${schedule.id}:${today.format('YYYY-MM-DD')}`),
             }"
@@ -121,7 +119,7 @@ async function onClickTaskCheckbox(sid: string) {
               class="rounded"
               :value="`${schedule.id}:${today.format('YYYY-MM-DD')}`"
             />
-          </Button>
+          </div>
         </template>
       </template>
     </ScrollArea>
