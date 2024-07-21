@@ -41,5 +41,5 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  return { status, message: "success", data };
+  return { status: 200, message: "success", data };
 });
