@@ -3,9 +3,30 @@ import "vue3-gantt/dist/style.css";
 import dayjs from "dayjs";
 import Gantt from "vue3-gantt";
 
-const ganttStore = useGanttStore();
-const { datePickerRange } = storeToRefs(ganttStore);
 const taskStore = useTaskStore();
+
+const defaultDateRange = ref({
+  start: dayjs().subtract(3, "day").format("YYYY-MM-DD"),
+  end: dayjs().add(20, "day").format("YYYY-MM-DD"),
+});
+
+const dateRange = ref(defaultDateRange.value);
+
+function onUpdateDateRange(range: { start: string | undefined; end: string | undefined }) {
+  let start = range.start;
+  if (start === undefined) {
+    start = defaultDateRange.value.start;
+  }
+  let end = range.end;
+  if (end === undefined) {
+    end = defaultDateRange.value.end;
+  }
+
+  dateRange.value = {
+    start,
+    end,
+  };
+}
 </script>
 
 <template>
@@ -13,7 +34,7 @@ const taskStore = useTaskStore();
     <div class="rounded-md border bg-card p-4 text-card-foreground">
       <div class="mb-4 flex items-center">
         <label>时间：</label>
-        <DateRangePicker />
+        <DateRangePicker :date-range="dateRange" @update:date-range="onUpdateDateRange" />
       </div>
       <ClientOnly>
         <div class="h-64">
@@ -23,7 +44,7 @@ const taskStore = useTaskStore();
             :active-date="dayjs().format('YYYY-MM-DD')"
             date-text="时间"
             :item-height="25"
-            :date-range-list="[datePickerRange.start, datePickerRange.end]"
+            :date-range-list="[dateRange.start, dateRange.end]"
           />
         </div>
         <template #fallback>

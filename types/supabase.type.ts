@@ -7,13 +7,13 @@ export interface Database {
         Row: {
           background_color: string | null;
           created_at: string;
-          cycle: string | null;
+          cycle: number | null;
           desc: string | null;
           end_time: string;
           finish: string[] | null;
           id: number;
           name: string | null;
-          sid: string | null;
+          sid: string;
           start_time: string;
           text_color: string | null;
           tid: string;
@@ -21,13 +21,13 @@ export interface Database {
         Insert: {
           background_color?: string | null;
           created_at?: string;
-          cycle?: string | null;
+          cycle?: number | null;
           desc?: string | null;
           end_time: string;
           finish?: string[] | null;
           id?: number;
           name?: string | null;
-          sid?: string | null;
+          sid: string;
           start_time: string;
           text_color?: string | null;
           tid: string;
@@ -35,13 +35,13 @@ export interface Database {
         Update: {
           background_color?: string | null;
           created_at?: string;
-          cycle?: string | null;
+          cycle?: number | null;
           desc?: string | null;
           end_time?: string;
           finish?: string[] | null;
           id?: number;
           name?: string | null;
-          sid?: string | null;
+          sid?: string;
           start_time?: string;
           text_color?: string | null;
           tid?: string;
@@ -50,7 +50,7 @@ export interface Database {
           {
             foreignKeyName: "schedule_tid_fkey";
             columns: ["tid"];
-            isOneToOne: true;
+            isOneToOne: false;
             referencedRelation: "task";
             referencedColumns: ["tid"];
           },

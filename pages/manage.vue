@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import dayjs from "dayjs";
+
 import { useToast } from "@/components/ui/toast/use-toast";
 
 const taskStore = useTaskStore();
@@ -21,15 +23,56 @@ const taskBackgroundColors: Ref<Record<string, string[]>> = ref({
   Blue: ["#eff6ff", "#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa"],
 });
 
+const scheduleBackgroundColors: Ref<Record<string, string>[]> = ref([
+  { bg: "#fb923c", text: "#ffff" },
+  { bg: "#d6d3d1", text: "#000" },
+  { bg: "#f87171", text: "#ffff" },
+  { bg: "#60a5fa", text: "#ffff" },
+  { bg: "#fca5a5", text: "#000" },
+  { bg: "#86efac", text: "#000" },
+  { bg: "#93c5fd", text: "#ffff" },
+  { bg: "#4ade80", text: "#ffff" },
+  { bg: "#38bdf8", text: "#ffff" },
+]);
+
 const newTaskItem = ref({
   name: "",
   color: "",
 });
 
+const dateRange = ref({
+  start: dayjs().format("YYYY-MM-DD"),
+  end: dayjs().add(20, "day").format("YYYY-MM-DD"),
+});
+
+function onUpdateDateRange(range: { start: string | undefined; end: string | undefined }) {
+  let start = range.start;
+  if (start === undefined) {
+    start = dayjs().format("YYYY-MM-DD");
+  }
+  let end = range.end;
+  if (end === undefined) {
+    end = dayjs().add(20, "day").format("YYYY-MM-DD");
+  }
+
+  dateRange.value = {
+    start,
+    end,
+  };
+}
+
+const newScheduleItem = ref({
+  name: "",
+  desc: "",
+  cycle: 1,
+  backgroundColor: scheduleBackgroundColors.value[0].bg,
+  textColor: scheduleBackgroundColors.value[0].text,
+});
+
 const { toast } = useToast();
 
 const createPopoverOpen = ref(false);
-
+const createDialogOpen = ref(false);
 const isCreating = ref(false);
 
 async function onClickCreateTask() {
@@ -58,6 +101,43 @@ async function onClickCreateTask() {
       description: "又有了新的目标！加油~",
     });
     createPopoverOpen.value = false;
+  }
+  isCreating.value = false;
+}
+
+async function onClickCreateSchedule() {
+  isCreating.value = true;
+  if (newScheduleItem.value.name === "") {
+    toast({
+      title: "🙅‍♂️日程名称不能为空",
+      description: "请输入日程名称",
+      variant: "destructive",
+    });
+
+    isCreating.value = false;
+    return;
+  }
+  const result = await taskStore.createSchedule({
+    ...newScheduleItem.value,
+    tid: currentTask.value.tid,
+    days: [dateRange.value.start, dateRange.value.end],
+  });
+  if (typeof result === "string") {
+    toast({
+      title: "日程创建失败",
+      description: result,
+      variant: "destructive",
+    });
+  } else {
+    toast({
+      title: `🎉日程创建成功：${newScheduleItem.value.name}`,
+    });
+    newScheduleItem.value.name = "";
+    newScheduleItem.value.desc = "";
+    newScheduleItem.value.cycle = 1;
+    newScheduleItem.value.backgroundColor = "";
+    newScheduleItem.value.textColor = "";
+    createDialogOpen.value = false;
   }
   isCreating.value = false;
 }
@@ -201,16 +281,85 @@ async function onClickCreateTask() {
                     color: schedule.textColor,
                   }"
                 >
-                  {{ schedule.name }}
+                  {{ schedule.name.slice(0, 2) }}
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Button variant="ghost" class="h-40 w-60 cursor-pointer rounded-lg border p-3 shadow">
-          <LucidePlus class="h-6 w-6" color="green" />
-          <span class="text-lg font-bold">添加计划</span>
-        </Button>
+        <Dialog v-model:open="createDialogOpen">
+          <DialogTrigger as-child>
+            <Button variant="ghost" class="h-40 w-60 cursor-pointer rounded-lg border p-3 shadow">
+              <LucidePlus class="h-6 w-6" color="green" />
+              <span class="text-lg font-bold">添加计划</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent class="w-[400px]">
+            <DialogHeader>
+              <DialogTitle>添加任务计划</DialogTitle>
+            </DialogHeader>
+            <div class="flex flex-col gap-4">
+              <div class="inline-flex items-center justify-between gap-4 text-nowrap">
+                <Label for="s_name" class="text-right">名称</Label>
+                <Input id="s_name" v-model="newScheduleItem.name" class="w-72" />
+              </div>
+              <div class="inline-flex items-start justify-between gap-4 text-nowrap">
+                <Label for="s_name" class="text-right">描述</Label>
+                <Textarea placeholder="Type your message here." class="w-72" />
+              </div>
+              <div class="inline-flex items-center justify-between gap-4 text-nowrap">
+                <Label for="username" class="text-right">时间</Label>
+                <DateRangePicker :date-range="dateRange" @update:date-range="onUpdateDateRange" />
+              </div>
+              <div class="inline-flex items-center justify-between gap-4 text-nowrap">
+                <Label for="username" class="text-right">周期/天</Label>
+                <NumberField
+                  id="age"
+                  v-model="newScheduleItem.cycle"
+                  :default-value="1"
+                  :min="1"
+                  locale="zh-CN"
+                >
+                  <NumberFieldContent>
+                    <NumberFieldDecrement />
+                    <NumberFieldInput />
+                    <NumberFieldIncrement />
+                  </NumberFieldContent>
+                </NumberField>
+              </div>
+              <div class="inline-flex items-start gap-4 text-nowrap">
+                <Label for="username" class="text-right">配色</Label>
+                <div class="flex flex-wrap gap-2">
+                  <p
+                    v-for="item in scheduleBackgroundColors"
+                    :key="`${item.bg}:${item.text}`"
+                    class="h-10 cursor-pointer rounded-md border p-2 text-sm ring-primary"
+                    :class="{
+                      'ring-2':
+                        item.bg === newScheduleItem.backgroundColor &&
+                        item.text === newScheduleItem.textColor,
+                    }"
+                    :style="{ backgroundColor: item.bg, color: item.text }"
+                    @click="
+                      newScheduleItem.backgroundColor = item.bg;
+                      newScheduleItem.textColor = item.text;
+                    "
+                  >
+                    {{
+                      newScheduleItem.name.length > 0 ? newScheduleItem.name.slice(0, 2) : "示例"
+                    }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button :disabled="isCreating" class="w-20" @click="onClickCreateSchedule">
+                <LucideLoaderCircle v-if="isCreating" class="mr-2 h-4 w-4 animate-spin" />
+                添加
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </ScrollArea>
   </div>

@@ -2,7 +2,7 @@ declare interface Schedule {
   id: string;
   name: string;
   desc: string;
-  cycle: string;
+  cycle: number;
   finish: string[];
   backgroundColor: string;
   textColor: string;

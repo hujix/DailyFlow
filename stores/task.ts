@@ -29,25 +29,7 @@ export const useTaskStore = defineStore("task", () => {
     }
   };
 
-  // const createTask = async (task: TaskItem) => {
-  //   const newSchedules: Schedule[] = [];
-  //   for (const sc of task.schedule) {
-  //     newSchedules.push({
-  //       ...sc,
-  //       id: uuidv4(),
-  //     });
-  //   }
-  //   const newTask = { ...task };
-  //   newTask.schedule = newSchedules;
-  //   tasks.value.push(newTask);
-
-  //   const result = await $fetch("/api/task", {
-  //     method: "POST",
-  //     body: task,
-  //   });
-  //   return result;
-  // };
-  const createTask = async (task: { name: string;color: string }): Promise<string | TaskItem> => {
+  const createTask = async (task: { name: string; color: string }): Promise<string | TaskItem> => {
     const newTask = {
       ...task,
       tid: uuidv4(),
@@ -59,9 +41,49 @@ export const useTaskStore = defineStore("task", () => {
       body: newTask,
     });
     if (result.status === 200) {
+      tasks.value.push(newTask);
       return newTask;
     }
-    tasks.value.push(newTask);
+
+    return result.message;
+  };
+
+  const createSchedule = async (schedule: {
+    tid: string;
+    name: string;
+    desc: string;
+    cycle: number;
+    backgroundColor: string;
+    textColor: string;
+    days: string[];
+  }): Promise<string | Schedule> => {
+    const sid = uuidv4();
+    const newSchedule = {
+      ...schedule,
+      sid,
+    };
+    const result = await $fetch("/api/task/schedule", {
+      method: "POST",
+      body: newSchedule,
+    });
+    if (result.status === 200) {
+      const result = {
+        id: sid,
+        name: schedule.name,
+        desc: schedule.desc,
+        cycle: schedule.cycle,
+        backgroundColor: schedule.backgroundColor,
+        textColor: schedule.textColor,
+        days: schedule.days,
+        finish: [],
+      };
+      tasks.value.forEach((task) => {
+        if (task.tid === schedule.tid)
+          task.schedule.push(result);
+      });
+
+      return result;
+    }
 
     return result.message;
   };
@@ -135,5 +157,13 @@ export const useTaskStore = defineStore("task", () => {
     return undefined;
   };
 
-  return { tasks, createTask, updateTasks, deleteTask, deleteSchedule, updateTaskSchedule };
+  return {
+    tasks,
+    createTask,
+    createSchedule,
+    updateTasks,
+    deleteTask,
+    deleteSchedule,
+    updateTaskSchedule,
+  };
 });

@@ -17,6 +17,7 @@ export default withNuxt(
   {
     rules: {
       "vue/comma-dangle": ["error", "only-multiline"],
+      "vue/operator-linebreak": ["error", "after"],
       "style/comma-dangle": ["error", "only-multiline"],
       "style/brace-style": ["error", "1tbs", { allowSingleLine: false }],
       "style/arrow-parens": ["error", "always"],
