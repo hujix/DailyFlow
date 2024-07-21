@@ -105,6 +105,40 @@ async function onClickCreateTask() {
   isCreating.value = false;
 }
 
+async function onClickDeleteTask(tid: string) {
+  const result = await taskStore.deleteTask(tid);
+  if (result === undefined || typeof result === "string") {
+    toast({
+      title: "任务删除失败",
+      description: result ?? "任务不存在或未知错误",
+      variant: "destructive",
+    });
+  } else {
+    toast({
+      title: `🎉任务删除成功：${result?.name}`,
+      description: "任务已删除",
+    });
+    currentTask.value = tasks.value[0] ?? [];
+  }
+}
+
+async function onClickDeleteSchedule(sid: string) {
+  const result = await taskStore.deleteSchedule(sid);
+  if (result === undefined || typeof result === "string") {
+    toast({
+      title: "计划删除失败",
+      description: result ?? "计划不存在或未知错误",
+      variant: "destructive",
+    });
+  } else {
+    toast({
+      title: "🎉计划删除成功",
+      description: `计划【${result.name}】已删除`,
+    });
+    currentTask.value = tasks.value[0] ?? [];
+  }
+}
+
 async function onClickCreateSchedule() {
   isCreating.value = true;
   if (newScheduleItem.value.name === "") {
@@ -156,7 +190,11 @@ async function onClickCreateSchedule() {
             <span class="font-bold">
               {{ task.name }}
             </span>
-            <Button variant="ghost" class="hidden group-hover:block">
+            <Button
+              variant="ghost"
+              class="hidden group-hover:block"
+              @click="onClickDeleteTask(task.tid)"
+            >
               <LucideTrash2 class="h-4 w-4" color="red" />
             </Button>
           </div>
@@ -258,7 +296,11 @@ async function onClickCreateSchedule() {
           <CardHeader class="p-0">
             <div class="inline-flex h-8 items-center justify-between">
               <CardTitle>{{ schedule.name }}</CardTitle>
-              <Button variant="ghost" class="hidden group-hover:block">
+              <Button
+                variant="ghost"
+                class="hidden group-hover:block"
+                @click="onClickDeleteSchedule(schedule.id)"
+              >
                 <LucideTrash2 class="h-4 w-4" color="red" />
               </Button>
             </div>

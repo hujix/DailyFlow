@@ -88,24 +88,41 @@ export const useTaskStore = defineStore("task", () => {
     return result.message;
   };
 
-  const deleteSchedule = async (schedule: Schedule): Promise<undefined> => {
-    await $fetch("/api/task", {
-      method: "delete",
-      body: { id: schedule.id, type: "schedule" },
+  const deleteTask = async (tid: string): Promise<string | TaskItem | undefined> => {
+    const result = await $fetch("/api/task", {
+      method: "DELETE",
+      body: { id: tid },
     });
+    if (result.status === 200) {
+      const deleteTaskItem: TaskItem | undefined = tasks.value.find((t) => t.tid === tid);
+      tasks.value = tasks.value.filter((t) => t.tid !== tid);
+      return deleteTaskItem;
+    }
 
-    tasks.value.forEach((task) => {
-      task.schedule = task.schedule.filter((s) => s.id !== schedule.id);
-    });
+    return result.message;
   };
 
-  const deleteTask = async (task: TaskItem): Promise<undefined> => {
-    await $fetch("/api/task", {
-      method: "delete",
-      body: { id: task.tid, type: "task" },
+  const deleteSchedule = async (sid: string): Promise<string | Schedule | undefined> => {
+    const result = await $fetch("/api/task/schedule", {
+      method: "DELETE",
+      body: { id: sid },
     });
+    if (result.status === 200) {
+      let deleteScheduleItem: Schedule | undefined;
+      tasks.value.forEach((task) => {
+        task.schedule.forEach((s) => {
+          if (s.id === sid) {
+            deleteScheduleItem = s;
+          }
+        });
+        if (deleteScheduleItem !== undefined) {
+          task.schedule = task.schedule.filter((s) => s.id !== sid);
+        }
+      });
+      return deleteScheduleItem;
+    }
 
-    tasks.value = tasks.value.filter((t) => t.tid !== task.tid);
+    return result.message;
   };
 
   const updateTaskSchedule = async (sid: string): Promise<boolean | string | undefined> => {
@@ -141,7 +158,7 @@ export const useTaskStore = defineStore("task", () => {
 
     if (updateItem.update) {
       try {
-        const fetchResult = await $fetch("/api/task", {
+        const fetchResult = await $fetch("/api/task/schedule", {
           method: "put",
           body: { sid, finish: updateItem.finish },
         });

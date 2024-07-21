@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const supabase = await serverSupabaseClient<Database>(event);
 
-  const deleteResult = await supabase.from("task").delete().eq("tid", id);
+  const deleteResult = await supabase.from("schedule").delete().eq("sid", id);
   if (deleteResult.error) {
     return {
       status: deleteResult.error.code,
