@@ -42,7 +42,7 @@ async function signInWithEmail() {
     email: email.value,
     options: {
       data: {
-        name: email.value.split("@")[0],
+        display_name: email.value.split("@")[0].slice(0, 5),
         avator: String(Math.floor(Math.random() * 53) + 1001),
       },
     },

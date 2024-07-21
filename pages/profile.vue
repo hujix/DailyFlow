@@ -14,9 +14,9 @@ const user = useSupabaseUser();
           <Avatar class="cursor-pointer" size="lg" shape="square">
             <AvatarImage
               :src="`/avatar/${user.user_metadata.avator}.png`"
-              :alt="user.user_metadata.name"
+              :alt="user.user_metadata.display_name"
             />
-            <AvatarFallback>{{ user.user_metadata.name.slice(0, 2) }}</AvatarFallback>
+            <AvatarFallback>{{ user.user_metadata.display_name.slice(0, 2) }}</AvatarFallback>
           </Avatar>
           <Button
             size="sm"
@@ -27,7 +27,7 @@ const user = useSupabaseUser();
           </Button>
         </div>
         <div>
-          <h2 class="text-3xl">{{ user.user_metadata.name }}</h2>
+          <h2 class="text-3xl">{{ user.user_metadata.display_name }}</h2>
           <span class="text-sm text-muted-foreground">{{ user.email }}</span>
         </div>
       </div>

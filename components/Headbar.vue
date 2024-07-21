@@ -28,17 +28,17 @@ async function onClickLogout() {
 </script>
 
 <template>
-  <div class="flex h-10 items-center justify-between">
-    <h2 class="mt-2 text-2xl font-bold">👋Hello ! xxx</h2>
+  <div class="flex h-full items-center justify-between">
+    <h2 class="mt-2 text-2xl font-bold">👋Hello ! {{ user.user_metadata.display_name }}</h2>
     <div class="inline-flex items-center gap-2">
       <HoverCard>
         <HoverCardTrigger as-child>
           <Avatar class="cursor-pointer">
             <AvatarImage
               :src="`/avatar/${user.user_metadata.avator}.png`"
-              :alt="user.user_metadata.name"
+              :alt="user.user_metadata.display_name"
             />
-            <AvatarFallback>{{ user.user_metadata.name.slice(0, 2) }}</AvatarFallback>
+            <AvatarFallback>{{ user.user_metadata.display_name.slice(0, 2) }}</AvatarFallback>
           </Avatar>
         </HoverCardTrigger>
         <HoverCardContent class="w-44 p-2">
@@ -46,12 +46,12 @@ async function onClickLogout() {
             <Avatar class="cursor-pointer" size="base">
               <AvatarImage
                 :src="`/avatar/${user.user_metadata.avator}.png`"
-                :alt="user.user_metadata.name"
+                :alt="user.user_metadata.display_name"
               />
-              <AvatarFallback>{{ user.user_metadata.name.slice(0, 2) }}</AvatarFallback>
+              <AvatarFallback>{{ user.user_metadata.display_name.slice(0, 2) }}</AvatarFallback>
             </Avatar>
             <div class="truncate text-center text-xl font-medium">
-              {{ user.user_metadata.name }}
+              {{ user.user_metadata.display_name }}
             </div>
             <div class="text-center text-xs text-muted-foreground">{{ user.email }}</div>
           </div>
