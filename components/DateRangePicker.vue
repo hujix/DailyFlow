@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { CalendarDate, type DateValue, isEqualMonth } from "@internationalized/date";
 import dayjs from "dayjs";
-import { LucideChevronLeft } from "lucide-vue-next";
 import { RangeCalendarRoot, useDateFormatter } from "radix-vue";
 import type { DateRange } from "radix-vue";
 import { type Grid, createMonth, toDate } from "radix-vue/date";
@@ -9,30 +8,36 @@ import { type Grid, createMonth, toDate } from "radix-vue/date";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const ganttStore = useGanttStore();
-const { datePickerRange } = storeToRefs(ganttStore);
+const props = defineProps({
+  dateRange: {
+    type: Object,
+    required: true,
+  },
+});
+
+const emit = defineEmits(["update:dateRange"]);
 
 const locale = ref("zh-CN");
 const formatter = useDateFormatter(locale.value);
 
 const currentDateRange: Ref<DateRange> = ref({
   start: new CalendarDate(
-    dayjs(datePickerRange.value.start).year(),
-    dayjs(datePickerRange.value.start).month() + 1,
-    dayjs(datePickerRange.value.start).date()
+    dayjs(props.dateRange.start).year(),
+    dayjs(props.dateRange.start).month() + 1,
+    dayjs(props.dateRange.start).date()
   ),
   end: new CalendarDate(
-    dayjs(datePickerRange.value.end).year(),
-    dayjs(datePickerRange.value.end).month() + 1,
-    dayjs(datePickerRange.value.end).date()
+    dayjs(props.dateRange.end).year(),
+    dayjs(props.dateRange.end).month() + 1,
+    dayjs(props.dateRange.end).date()
   ),
 }) as Ref<DateRange>;
 
 watch(currentDateRange, (newValue) => {
-  datePickerRange.value = {
-    start: newValue.start?.toString() ?? dayjs().subtract(5, "day").format("YYYY-MM-DD"),
-    end: newValue.end?.toString() ?? dayjs().add(25, "day").format("YYYY-MM-DD"),
-  };
+  emit("update:dateRange", {
+    start: newValue.start?.toString(),
+    end: newValue.end?.toString(),
+  });
 });
 
 const placeholder = ref(currentDateRange.value.start) as Ref<DateValue>;
